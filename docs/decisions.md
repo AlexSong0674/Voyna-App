@@ -1,0 +1,122 @@
+# Voyna 주요 결정사항 (Decision Log)
+
+> 개발 과정에서 내린 중요한 의사결정을 시간순으로 기록.  
+> 나중에 "왜 그렇게 했지?" 싶을 때 돌아볼 수 있도록 작성.
+
+---
+
+## 2026-05-12: 인증 Provider 선정 — Kakao + Google만 MVP
+
+### ✅ 결정
+MVP는 **Kakao 로그인 + Google 로그인** 2종만 지원. **Naver 로그인은 V1.1으로 연기**.
+
+### 🤔 검토한 옵션
+| 옵션 | 장점 | 단점 | MVP 적합? |
+|------|------|------|----------|
+| A. Kakao + Google | Supabase 기본 지원, 15~25분 설정 | 네이버 사용자 일부 누락 | ✅ |
+| B. Kakao + Google + Naver | 모든 한국 사용자 커버 | 네이버는 Supabase 미지원 → 커스텀 Edge Function 60~90분 추가 작업 | ❌ (시간) |
+| C. Email + Password 만 | 모든 사용자 커버 | 가입 마찰 큼, 비밀번호 분실 처리 등 운영 부담 | ❌ |
+
+### 📌 결정 근거
+1. **시장 점유율**: 한국 모바일 앱에서 카카오 로그인 점유율이 네이버보다 높음
+2. **MVP 일정**: 12주 안에 출시 목표 — 1~2일 일정 단축 가능
+3. **출시 후 빠르게 보완 가능**: Naver는 Edge Function 1개 추가로 V1.1에 무리 없이 도입
+4. **Supabase 기본 지원의 가치**: 보안·유지보수·문서 표준화
+
+### 📅 V1.1 (출시 후 4~8주) 계획
+- 네이버 디벨로퍼스 OAuth 앱 등록
+- Edge Function `naver_oauth_callback` 작성 — Naver access token → Supabase JWT 발급
+- 앱 로그인 화면에 네이버 버튼 추가
+- 예상 작업: 2~3일
+
+### 🔗 참고
+- Supabase Auth Providers: https://supabase.com/docs/guides/auth/social-login
+- Naver 디벨로퍼스: https://developers.naver.com/main/
+
+---
+
+## 2026-05-12: 백엔드 스택 — Supabase 단일화
+
+### ✅ 결정
+**Supabase** 하나로 백엔드 전체 처리 (PostgreSQL + Auth + Edge Functions + Storage).
+데모 단계의 Firebase는 사용 안 함.
+
+### 📌 근거
+- Free 플랜으로 MAU 5만까지 무료
+- 단일 vendor → 통합 SDK + 단순한 운영
+- PostgreSQL 표준 SQL 사용 가능
+- Edge Functions로 서버 로직 처리 (어뷰징 방지)
+
+### 🔗 참고: 기획서 v2.0 9장 — 기술 스택 검토
+
+---
+
+## 2026-05-12: 앱 프레임워크 — Raw Flutter (FlutterFlow 미사용)
+
+### ✅ 결정
+**Flutter SDK 직접 사용** (Dart 코드 직접 작성). FlutterFlow는 사용하지 않음.
+
+### 🤔 검토한 옵션
+| 옵션 | 비용 | 적합도 |
+|------|------|--------|
+| A. Raw Flutter | 무료 (영구) | ✅ |
+| B. FlutterFlow Free | 무료 (제한적) | △ (코드 export·App Store 배포 시 Pro 필요) |
+| C. FlutterFlow Pro | $30/월 | △ (불필요한 비용) |
+| D. SAP Build Apps | 무료 | ❌ (React Native — 카카오맵 재작성 필요) |
+
+### 📌 근거
+- 100% 무료 (출시 후에도 영구)
+- Claude가 Dart 코드를 직접 작성 → 노코드 UI 빌더 불필요
+- 진짜 개발 자산 = git에 모두 보관
+- iOS 빌드는 Codemagic 무료 플랜으로 Mac 없이 진행
+
+---
+
+## 2026-05-12: 명소 30곳 (50곳 → 축소)
+
+### ✅ 결정
+MVP는 **서울 30곳 + 배지 30종**으로 출시. 50곳 → 30곳으로 축소.
+
+### 📌 근거
+- 12주 일정에 맞추기 위해 디자인·테스트 작업량 축소
+- 특별 3 + 희귀 8 + 일반 19 = 30 (등급 균형 유지)
+- 출시 후 매주 5~10곳씩 추가 → V1.1에 50곳 → V1.2에 100곳 확장 계획
+
+### 🔗 참고
+- 30곳 목록: `supabase/migrations/0002_seed_data.sql`
+- 50곳 원본: 기획서 `data/seoul_50_locations.csv`
+
+---
+
+## 2026-05-12: 디자인 — 무료 AI 도구만
+
+### ✅ 결정
+MVP의 50종 배지 디자인은 **Microsoft Designer + Ideogram + Canva** 무료 도구만 활용.
+외주 디자이너는 V1.1 이후 검토.
+
+### 📌 근거
+- 비용 0원 (예산 절감)
+- AI 도구로 1~2주 안에 30종 양산 가능
+- 사용자 반응 보고 V1.1에서 고품질 외주 업그레이드 결정
+
+---
+
+## 결정사항 추가 시 양식
+
+새로운 중요 결정을 내릴 때 이 파일에 다음 형식으로 추가:
+
+```markdown
+## YYYY-MM-DD: 결정 제목
+
+### ✅ 결정
+한 줄 요약.
+
+### 🤔 검토한 옵션
+표 형식 비교.
+
+### 📌 결정 근거
+번호 매긴 이유.
+
+### 📅 향후 계획 (필요시)
+연기·재검토 일정.
+```
