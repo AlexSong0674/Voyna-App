@@ -44,22 +44,30 @@ voyna-app/
 
 ---
 
-## 현재 상태 (2026-05-12 기준)
+## 현재 상태 (2026-05-22 기준)
 
 ### ✅ 완료된 것
 - **Supabase 백엔드 100%** — 8 테이블 + RLS + 4 Edge Function 모두 ACTIVE
 - **시드 데이터** — 서울 30 명소 + 30 배지 입력 완료
-- **로컬 → GitHub** push 완료
+- **Flutter SDK 3.41.9 설치** (`C:\dev\flutter`)
+- **Flutter 프로젝트 초기화** + 141 패키지 설치
+- **lib/ 구조 + 인증 페이지 + 4탭 셸 코드 작성**
+- **Google OAuth 동작 확인** ✅
+- **Release 모드 빌드 성공** (dev 모드는 불안정)
 
-### 🔄 진행 중
-- **Phase 2: 인증 시스템** — Kakao + Google OAuth 셋업 (V1.1에 Naver 추가 예정)
+### ⚠️ 주의사항
+- **카카오 OAuth는 MVP에서 제외** — V1.1로 연기 (자세한 내용: `docs/decisions.md`)
+- **Dev 모드 빌드 불안정** — 반드시 `flutter run --release` 사용
+- **디스크 7~8GB** — Android Studio 설치 보류
 
 ### 📋 다음 단계 (Phase 3+)
-- Flutter 프로젝트 초기화
-- 4탭 UI (홈/맵/배지/더보기)
-- GPS + 배지 획득 로직
-- AI 무료 도구로 배지 30종 디자인
+- 4탭 화면 동작 검증 (Google 로그인 → 홈 → 배지 그리드)
+- Phase 4: GPS + 카카오맵 + 배지 획득 로직
+- Phase 6: AI 무료 도구로 배지 30종 디자인
 - TestFlight 베타 → App Store 출시
+
+### 🔄 새 세션 시작 시
+**`docs/HANDOFF.md` 먼저 읽기** — 모든 컨텍스트 정리됨.
 
 ---
 

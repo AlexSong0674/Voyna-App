@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "voyna-flutter",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-Command", "while ($true) { Start-Sleep 60 }"],
+      "port": 3000
+    }
+  ]
+}
